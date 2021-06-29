@@ -1,0 +1,88 @@
+-- -- database creation
+
+CREATE DATABASE StoreChains;
+USE StoreChains;
+
+
+-- -- create tables
+
+CREATE TABLE Branches
+(
+	id INT PRIMARY KEY IDENTITY(1,1),
+	bName NVARCHAR(30) NOT NULL
+);
+
+CREATE TABLE Employees
+(
+	id INT PRIMARY KEY IDENTITY(1,1),
+	branchId INT NULL FOREIGN KEY REFERENCES Branches(id),
+	eName NVARCHAR(30) NOT NULL,
+	employmentDate DATETIME NOT NULL
+);
+
+CREATE TABLE ProductCategories
+(
+	id INT PRIMARY KEY IDENTITY(1,1),
+	pcName NVARCHAR(30) NOT NULL
+);
+
+CREATE TABLE Products
+(
+	id INT PRIMARY KEY IDENTITY(1,1),
+	pName NVARCHAR(30) NOT NULL,
+	price DECIMAL(7,2) NOT NULL,
+	categoryId INT NULL FOREIGN KEY REFERENCES ProductCategories(id)
+)
+
+CREATE TABLE PropertyNames
+(
+	id INT PRIMARY KEY IDENTITY(1,1),
+	prName NVARCHAR(30) NOT NULL
+);
+
+CREATE TABLE PropertyValues
+(
+	id INT PRIMARY KEY IDENTITY(1,1),
+	val NVARCHAR(30) NULL
+);
+
+CREATE TABLE ProductProperties
+(
+	id INT PRIMARY KEY IDENTITY(1,1),
+	productId INT NULL FOREIGN KEY REFERENCES Products(id),
+	propNameId INT NULL FOREIGN KEY REFERENCES PropertyNames(id),
+	propValueId INT NULL FOREIGN KEY REFERENCES PropertyValues(id)
+);
+
+CREATE TABLE Storage
+(
+	id INT PRIMARY KEY IDENTITY(1,1),
+	branchId INT NULL FOREIGN KEY REFERENCES Branches(id),
+	productId INT NULL FOREIGN KEY REFERENCES Products(id),
+	amount INT NULL
+);
+
+CREATE TABLE Customers
+(
+	id INT PRIMARY KEY IDENTITY(1,1),
+	cName NVARCHAR(30) NOT NULL,
+	city NVARCHAR(30) NULL
+);
+
+CREATE TABLE Orders
+(
+	id INT PRIMARY KEY IDENTITY(1,1),
+	branchId INT NULL FOREIGN KEY REFERENCES Branches(id),
+	customerId INT NULL FOREIGN KEY REFERENCES Customers(id),
+	orderDate DATETIME NOT NULL
+);
+
+CREATE TABLE OrderDetails
+(
+	orderId INT NOT NULL FOREIGN KEY REFERENCES Orders(id),
+	productId INT NOT NULL FOREIGN KEY REFERENCES Products(id),
+	amount INT NOT NULL,
+	CONSTRAINT PK_OrderDetails PRIMARY KEY (orderId, productId)
+);
+
+
